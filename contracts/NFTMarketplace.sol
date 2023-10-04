@@ -50,7 +50,7 @@ contract NFTMarketplace is ERC721URIStorage{
 
     //those who will create nft will have to pay a amount to me
     function updateListingPrice(uint256 _ListingPrice) public payable onlyOwner{
-        listingPrice = _listingPrice;
+        listingPrice = _ListingPrice;
     }
 
     function getListingPrice() public view returns (uint256){
@@ -165,6 +165,26 @@ contract NFTMarketplace is ERC721URIStorage{
     }
 
     // single user item
+    function fetchItemsListed() public view returns (MarketItem[] memory){
+        uint256 totalCount = _tokenIds.current();
+        uint256 itemCount = 0;
+        uint256 currentIndex = 0;
+        for(uint256 i = 0; i < totalCount; i++){
+            if(idMarketItem[i + 1].seller == msg.sender){
+                itemCount += 1;
+            }
+        }
+        MarketItem[] memory items = new MarketItem[](itemCount);
+        for(uint256 i = 0; i < totalCount; i++){
+            if(idMarketItem[i + 1].seller == msg.sender){
+                uint256 currentId = i + 1;
+                MarketItem storage currentItem = idMarketItem[currentId];
+                items[currentIndex] = currentItem;
+                currentIndex += 1;
+            }
+        }
+        return items;
+    }
     
 }
 
